@@ -1,15 +1,23 @@
 import os
-from supabase import create_client, Client  # pip install supabase
-from dotenv import load_dotenv  # pip install python-dotenv
-from datetime import datetime, timedelta
+from supabase import create_client, Client
+from dotenv import load_dotenv
 
 load_dotenv()
 
-url = os.getenv("url")
-key = os.getenv("key")
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+if  not SUPABASE_KEY:
+    raise ValueError(
+        "Supabase  Key not found. Please check your .env file."
+    )
+if not SUPABASE_URL:
+    raise ValueError(
+        "Supabase URL  not found. Please check your .env file."
+    )
 
 
-sb: Client = create_client(url, key)
+print(SUPABASE_KEY,SUPABASE_URL)
+sb: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 current_user=None
 
 
