@@ -1,13 +1,18 @@
-from fastapi import FastAPI, HTTPException, Depends
-from fastapi.middleware.cors import CORSMiddleware
+import sys
+import os
+# API/main.py
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from src.logic import SocialMediaPlatform   # your own logic
+from fastapi.middleware.cors import CORSMiddleware
 from typing import Optional
-import sys, os
+#uvicorn API.main:app --reload
+# Add parent directory (project root) to sys.path
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-# Add src folder to path
-sys.path.append(os.path.join(os.path.dirname(__file__),'..','src'))
-
-from logic import SocialMediaPlatform
+# Now you can import from src
+from src.logic import SocialMediaPlatform
+from src.db import DatabaseManager
 
 
 # --------------------------

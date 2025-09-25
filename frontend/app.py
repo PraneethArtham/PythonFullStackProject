@@ -1,6 +1,6 @@
 import streamlit as st
 import requests
-
+#uvicorn main:app --reload
 BASE_URL = "http://127.0.0.1:8000"
 
 def signup(username, password, role="user"):
@@ -125,11 +125,11 @@ elif choice == "Home":
                 with col1:
                     if st.button(f"Like {post['id']}", key=f"like_{post['id']}"):
                         like_post(post["id"])
-                        st.experimental_rerun()
+                        st.rerun()
                 with col2:
                     if st.button(f"Unlike {post['id']}", key=f"unlike_{post['id']}"):
                         unlike_post(post["id"])
-                        st.experimental_rerun()
+                        st.rerun()
 
                 # Comments
                 with st.expander("💬 Comments"):
