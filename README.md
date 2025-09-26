@@ -89,7 +89,7 @@ Backend:
 ```bash
 cd api
 uvicorn main:app --reload   # (if FastAPI)
-
+streamlit run frontend/app.py
 
 ---
 
