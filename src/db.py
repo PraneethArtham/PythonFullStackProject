@@ -58,33 +58,102 @@ class DatabaseManager:
         }).execute()
         return result.data
 
+    # def like_post(self, post_id: int):
+    #     if not self.current_user:
+    #         return {"error": "User not logged in"}
+
+    #     existing_like = self.sb.table("likes").select("*") \
+    #         .eq("user_id", self.current_user["id"]) \
+    #         .eq("post_id", post_id).execute()
+
+    #     if existing_like.data:
+    #         return {"error": "Post already liked"}
+
+    #     result = self.sb.table("likes").insert({
+    #         "user_id": self.current_user["id"],
+    #         "post_id": post_id
+    #     }).execute()
+    #     return result.data
+
+    # def unlike_post(self, post_id: int):
+    #     if not self.current_user:
+    #         return {"error": "User not logged in"}
+
+    #     self.sb.table("likes").delete().match({
+    #         "user_id": self.current_user["id"],
+    #         "post_id": post_id
+    #     }).execute()
+
+    #     return {"message": "Unliked successfully"}
+    def count_likes(self, post_id: int) -> int:
+        """Count number of likes for a post"""
+        result = self.sb.table("likes").select("id", count="exact").eq("post_id", post_id).execute()
+        return result.count or 0
+
+    # def update_like_count(self, post_id: int) -> int:
+    #     """Update the like_count column in posts table"""
+    #     likes = self.count_likes(post_id)
+    #     self.sb.table("posts").update({"like_count": likes}).eq("post_id", post_id).execute()
+    #     return likes
+    def update_like_count(self, post_id: int) -> int:
+        """Update the like_count column in posts table"""
+        likes = self.count_likes(post_id)
+        # Use the correct column name (id instead of post_id)
+        self.sb.table("posts").update({"like_count": likes}).eq("id", post_id).execute()
+        return likes
+
+
+    # def like_post(self, post_id: int):
+    #     """Add a like and update like_count"""
+    #     user_id=self.current_user["id"]
+    #     exists = self.sb.table("likes").select("id").eq("id", post_id).eq("user_id", user_id).execute()
+    #     if exists.data:
+    #         return {"error": "Already liked"}
+        
+    #     self.sb.table("likes").insert({"post_id": post_id, "user_id": user_id}).execute()
+    #     like_count = self.update_like_count(post_id)
+    #     return {"success": True, "like_count": like_count}
+
     def like_post(self, post_id: int):
         if not self.current_user:
             return {"error": "User not logged in"}
+        
+        user_id = self.current_user["id"]
 
-        existing_like = self.sb.table("likes").select("*") \
-            .eq("user_id", self.current_user["id"]) \
-            .eq("post_id", post_id).execute()
+        # Check if the user already liked the post
+        existing = self.sb.table("likes").select("id").eq("post_id", post_id).eq("user_id", user_id).execute()
+        if existing.data:
+            return {"message": "Already liked", "like_count": self.count_likes(post_id)}
 
-        if existing_like.data:
-            return {"error": "Post already liked"}
+        # Insert new like
+        self.sb.table("likes").insert({"post_id": post_id, "user_id": user_id}).execute()
 
-        result = self.sb.table("likes").insert({
-            "user_id": self.current_user["id"],
-            "post_id": post_id
-        }).execute()
-        return result.data
+        # Update like_count
+        like_count = self.update_like_count(post_id)
+        return {"success": True, "like_count": like_count}
 
     def unlike_post(self, post_id: int):
+        """Remove a like and update like_count"""
         if not self.current_user:
             return {"error": "User not logged in"}
 
-        self.sb.table("likes").delete().match({
-            "user_id": self.current_user["id"],
-            "post_id": post_id
-        }).execute()
+        user_id = self.current_user["id"]
 
-        return {"message": "Unliked successfully"}
+        # Check if the user has liked this post
+        existing = self.sb.table("likes").select("id").eq("post_id", post_id).eq("user_id", user_id).execute()
+        if not existing.data:
+            # User hasn't liked this post
+            return {"message": "You have not liked this post", "like_count": self.count_likes(post_id)}
+
+        # Delete the like
+        self.sb.table("likes").delete().eq("post_id", post_id).eq("user_id", user_id).execute()
+
+        # Update the like_count column
+        like_count = self.update_like_count(post_id)
+
+        return {"success": True, "like_count": like_count}
+
+    
 
     def comment_post(self, post_id: int, content: str):
         if not self.current_user:
@@ -97,13 +166,23 @@ class DatabaseManager:
         }).execute()
         return result.data
 
+    # def get_posts(self):
+    #     result = self.sb.table("posts").select("*").execute()
+    #     return result.data
     def get_posts(self):
-        result = self.sb.table("posts").select("*").execute()
-        return result.data
+        try:
+            response = sb.table("posts").select("*").execute()
+            posts = response.data
+            print("📢 Processed posts:", posts)           # DEBUG
+            return posts
+        except Exception as e:
+            print("❌ Error fetching posts:", e)
+            return []
 
     def get_post_by_id(self, post_id: int):
         result = self.sb.table("posts").select("*").eq("id", post_id).execute()
         return result.data
 s=DatabaseManager()
-print(s.login("praneeth","artham432779"))
-print(s.get_post_by_id(2))
+print(s.login("admin","artham432779"))
+print(s.unlike_post(1))
+print(s.count_likes(1))

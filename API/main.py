@@ -78,10 +78,19 @@ def create_post(post: PostSchema):
         raise HTTPException(status_code=400, detail=result["error"])
     return {"message": "Post created successfully", "post": result}
 
+# @app.get("/posts")
+# def get_posts():
+#     posts = social_platform.get_posts()
+#     return {"posts": posts}
 @app.get("/posts")
 def get_posts():
-    posts = social_platform.fetch_posts()
-    return {"posts": posts}
+    try:
+        posts = social_platform.get_posts()
+        if posts is None:
+            posts = []
+        return {"posts": posts}
+    except Exception as e:
+        return {"posts": [], "error": str(e)}
 
 # --------------------------
 # Like / Unlike Endpoints
@@ -109,7 +118,6 @@ def comment_post(comment: CommentSchema):
     if "error" in result:
         raise HTTPException(status_code=400, detail=result["error"])
     return {"message": "Comment added successfully", "comment": result}
-
 
 # --------------------------
 # Run the app

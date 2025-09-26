@@ -139,7 +139,7 @@ elif choice == "Home":
                     if st.button("Comment", key=f"comment_btn_{post['id']}"):
                         if comment_text:
                             comment_post(post["id"], comment_text)
-                            st.experimental_rerun()
+                            st.rerun()
 
                 st.markdown("---")
         else:

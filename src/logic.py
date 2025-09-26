@@ -35,8 +35,24 @@ class SocialMediaPlatform:
         if not self.current_user:
             return {"error": "User not logged in"}
         return self.db.comment_post(post_id, content)
+    # def get_posts(self):
+    #     try:
+    #         response = sb.table("posts").select("*").execute()
+    #         posts = response.data
+    #         return posts
+    #     except Exception as e:
+    #         print("Error fetching posts:", e)
+    #         return []
+    def get_posts(self):
+        try:
+            posts = self.db.get_posts()  # Use your DatabaseManager method
+            print("📢 Fetched posts:", posts)  # DEBUG
+            return posts
+        except Exception as e:
+            print("❌ Error fetching posts:", e)
+            return []
 
-
-# Testing
+#Testing
 s = SocialMediaPlatform()
 print(s.login("praneeth", "artham432779"))
+print(s.get_posts())
