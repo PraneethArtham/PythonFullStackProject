@@ -1,89 +1,155 @@
-## Social Media Platform
+# 🌐 **SOCIAL CONNECT** 🤝  
 
-A social media platform built using Python (Flask) and Supabase to manage authentication, real-time interactions, and data storage. This project allows users to create profiles, post content, interact with posts (comments, likes), and follow other users.
+## 📝 **Project Description**  
 
-## Features:
-User Registration & Authentication: Using Supabase to handle sign-ups, logins, and user management.
-Profile Management: Users can create and manage their profiles.
-Post Creation: Users can create posts with or without images.
-Real-Time Updates: New posts, comments, and likes are updated in real-time.
-Follow System: Users can follow and unfollow each other to see posts from followed users in their feed.
-Comment & Like System: Users can interact with posts via likes and comments.
-Admin Role: Admins can manage the users and moderate content.
+Social Connect is a full-stack social media platform that lets users create profiles, post updates, follow friends, and interact through likes, comments, and private messaging. It’s built to demonstrate how modern web frameworks, APIs, and databases can be combined to deliver an engaging, scalable social experience.  
 
-## Tech Stack:
-Backend: Python, Flask
-Database: Supabase (PostgreSQL)
-Authentication: Supabase Auth
-Real-Time: Supabase Real-Time
-Frontend: HTML, CSS, JavaScript
+---
 
+## ✨ **Features**  
 
-## File Structure:
+- **User Authentication & Profiles** 🔑: Secure sign-up, login, and profile management with profile pictures & bios.  
+- **Post Creation & Feeds** 📝: Users can create posts (text, images, or videos) and view a personalized timeline.  
+- **Likes & Comments** ❤️💬: Real-time interactions on posts.  
+- **Follow/Unfollow System** 👥: Users can follow each other to customize their feed.  
+- **Direct Messaging** 📩: Private chat between users.  
+- **Notifications** 🔔: Instant alerts for likes, comments, and new followers.  
+- **RESTful API Endpoints** 🌐: Backend endpoints for all operations (authentication, posts, interactions, messaging).  
+- **Validation & Error Handling** ✅: Ensures clean input and informative error messages.  
+- **Responsive Frontend** 📱: Works seamlessly on desktop and mobile.  
 
-PYTHONFULLSTACKPROJECT/
+---
+
+## 📂 **Project Structure**  
+
+```
+SOCIAL CONNECT/
 |
-|--src/
-|   |--logic.py  #logic and task
-|   |--db.py #database related
+|---src/                 # Core application logic
+|    |---db.py/         # Database models (Users, Posts, Comments)
+|    |---logic.py/       # Business logic 
 |
-|--API/  #backend api
-|   |--main.py #fastapi
+|---api/                 # Backend API
+|    |---main.py         # FastAPI/Express endpoints
 |
-|--frontend/  #frontend application
-|   |--app.py  #streamlit web interface
+|---frontend/            # Frontend application
+|    |---app.py/          # Main pages (feed, profile, messaging)
 |
-|__requirements.txt #install python dependicies
-|
-|__README.md #project documentation
-|
-|__.env     #python variables    
+|---requirements.txt     # Python dependencies
+|---README.md            # Project Documentation
+|---.env                 # Environment variables
+```
+
+---
+
+## 🚀 **Quick Start**  
+
+### **Prerequisites**  
+- Python 3.9+ (if backend in FastAPI) 🐍  
+- PostgreSQL / Supabase 
+- Git for cloning 🪴  
+
+### **1. Clone the Project**  
+```bash
+git clone <repo-url>
+cd social-connect
+```
+
+### **2. Install Dependencies**  
+
+Python backend:  
+```bash
+pip install -r requirements.txt
+```  
 
 
-## Quick Start
+### **3. Setup Database**  
 
-### prerequisties
+Create the required tables/collections in your database (users, posts, comments, messages). Run included migration/SQL scripts if provided.  
 
---Python 3.8 or higher
---Supabase Account
---Git(push,cloning)
+### **4. Configure Environment Variables**  
 
+Create a `.env` file in the root directory and add your credentials:  
 
-## 1.Clone or Download Project
+```ini
+DATABASE_URL=YOUR_DATABASE_URL
+SECRET_KEY=YOUR_SECRET_KEY
+API_BASE_URL=http://localhost:8000
+```
 
-# option1 :clone-->git clone <repo-name>
+### **5. Run the Application**  
 
-# 2.install dependicies 
+Frontend:  
+```bash
+cd frontend
+streamlit run app.py
+```  
 
-# install all requirements --> pip install -r requirements.txt
-
-# 3.set your  supabase database
-
-# 4.Get your credentials
-
-1. create a .env file 
-
-2. add supabase credentials to your .env file:
-url="supabase_url"
-key="supabase_key"
-
-
-# Key Components
-
-1. ## 'src/db.py'-->database operations and handle all crud operations
-2. ## 'src/logic.py'-->business logic and task validation and processing
-
-## troubleshooting
-
-##  common issues
-
-1. **Module not found error**-->Make sure you installed all dependicies
+Backend:  
+```bash
+cd api
+uvicorn main:app --reload   # (if FastAPI)
 
 
-## support
- if you encounter any issues or have questions :
- Contact details:9059222978
- mail id:arthampraneeth977@gmail.com
+---
 
+## 💡 **How to Use**  
 
- 
+1. Sign up for an account.  
+2. Set up your profile (photo, bio).  
+3. Post updates and follow friends.  
+4. Like, comment, and send messages.  
+
+---
+
+## 💻 **Technologies Used**  
+
+- **Frontend**: Streamlit ✨  
+- **Backend**: FastAPI (Python) ⚡  
+- **Database**: PostgreSQL 
+- **Authentication**: JWT / OAuth2 🔒  
+
+### **Key Components**  
+
+- `src/db.py/`: Database schemas.  
+- `src/logic.py/`: Core logic (feed generation, notifications).  
+- `api/main.py`: REST API endpoints.  
+
+---
+
+## ⚠️ **Troubleshooting**  
+
+### **1. Backend Issues**  
+
+- **`500 Internal Server Error`** 💥  
+  - **Reason:** Misconfigured database connection.  
+  - **Solution:** Check your `.env` credentials and verify the database is running.  
+
+- **CORS Errors** 🌐  
+  - **Reason:** Frontend and backend on different ports.  
+  - **Solution:** Enable CORS in your backend.  
+
+### **2. Frontend Issues**  
+
+- **`ConnectionError`** 🔌  
+  - **Reason:** Backend not running.  
+  - **Solution:** Start the backend server first.  
+
+---
+
+## 📈 **Future Enhancements**  
+
+- **Stories Feature** 📸: Temporary photo/video updates.  
+- **Group Chats** 👨‍👩‍👧‍👦: Multi-user messaging.  
+- **Advanced Search** 🔍: Find users, posts, and hashtags.  
+- **Push Notifications** 📲: Real-time mobile/web notifications.  
+- **Media Uploads to Cloud Storage** ☁️: AWS S3 or Cloudinary integration.  
+- **Analytics Dashboard** 📊: Insights into user activity.  
+
+---
+
+## 🤝 **Support**  
+
+If you encounter any issues or have questions, please feel free to reach out:  
+
+- Email: `arthampraneeth977@example.com` 📧  
