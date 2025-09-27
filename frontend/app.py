@@ -106,24 +106,46 @@ if "page" not in st.session_state:
 # -------------------------------
 # Navigation (only visible after login)
 # -------------------------------
+# -------------------------------
+# Navigation (only visible after login)
+# -------------------------------
 if st.session_state.username:
     nav_placeholder = st.empty()
     with nav_placeholder.container():
-        st.markdown('<div class="top-right-nav">', unsafe_allow_html=True)
-        if st.button("📢 Home"):
-            st.session_state.page = "Home"
-        if st.button("📝 Signup"):
-            st.session_state.page = "Signup"
-        if st.button("🔒 Logout"):
-            st.session_state.username = None
-            st.session_state.page = "Login"
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("""
+            <style>
+            .top-right-nav {
+                position: absolute;
+                top: 20px;
+                right: 30px;
+                display: flex;
+                flex-direction: row;
+                gap: 10px;
+            }
+            </style>
+            <div class="top-right-nav">
+        """, unsafe_allow_html=True)
+
+        col1, col2, col3 = st.columns([1,1,1])
+        with col1:
+            if st.button("📢 Home"):
+                st.session_state.page = "Home"
+        with col2:
+            if st.button("📝 Signup"):
+                st.session_state.page = "Signup"
+        with col3:
+            if st.button("🔒 Logout"):
+                st.session_state.username = None
+                st.session_state.page = "Login"
+                st.rerun()
+
+        st.markdown("</div>", unsafe_allow_html=True)
+
 
 # -------------------------------
 # Pages
 # -------------------------------
-
+#st.markdown('<div class="main-title">🌐 Social Media Platform</div>', unsafe_allow_html=True)
 # Login Page
 if st.session_state.page == "Login" and not st.session_state.username:
     st.markdown('<div class="main-title">🌐 Social Media Platform</div>', unsafe_allow_html=True)
@@ -150,6 +172,7 @@ if st.session_state.page == "Login" and not st.session_state.username:
 # Signup Page
 elif st.session_state.page == "Signup" and not st.session_state.username:
   #  st.markdown('<div class="google-box">', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">🌐 Social Media Platform</div>', unsafe_allow_html=True)
     st.subheader("Create an Account")
     username = st.text_input("Choose Username")
     password = st.text_input("Choose Password", type="password")
@@ -169,6 +192,7 @@ elif st.session_state.page == "Home":
     if not st.session_state.username:
         st.warning("You must login first")
     else:
+        
         st.markdown(f"<h2>Welcome {st.session_state.username} 🎉</h2>", unsafe_allow_html=True)
 
         # Create Post
@@ -195,11 +219,11 @@ elif st.session_state.page == "Home":
 
                     col1, col2 = st.columns(2)
                     with col1:
-                        if st.button(f"Like {post['id']}", key=f"like_{post['id']}"):
+                        if st.button("👍 Like", key=f"like_{post['id']}"):
                             like_post(post["id"])
                             st.rerun()
                     with col2:
-                        if st.button(f"Unlike {post['id']}", key=f"unlike_{post['id']}"):
+                        if st.button("👎 Unlike", key=f"unlike_{post['id']}"):
                             unlike_post(post["id"])
                             st.rerun()
 
