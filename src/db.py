@@ -1,7 +1,8 @@
 import os
 from supabase import create_client, Client
 from dotenv import load_dotenv
-
+import requests
+from datetime import datetime
 load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -47,16 +48,81 @@ class DatabaseManager:
         result = self.sb.table("profiles").select("id", "username", "created_at", "role").eq("username", username).execute()
         return result.data[0]
 
+    # def create_post(self, content: str, image_url: str = ""):
+    #     if not self.current_user:
+    #         return {"error": "User not logged in"}
+
+    #     result = self.sb.table("posts").insert({
+    #         "user_id": self.current_user["id"],
+    #         "content": content,
+    #         "image_url": image_url
+    #     }).execute()
+    #     return result.data
+    # def upload_image(self, image_url: str) -> str:
+    #     """Upload image from URL to Supabase storage and return public URL"""
+    #     try:
+    #         # Fetch the image content from given URL
+    #         response = requests.get(image_url)
+    #         if response.status_code != 200:
+    #             raise Exception("Failed to download image")
+
+    #         # Generate a unique filename
+    #         filename = f"{self.current_user['id']}_{int(datetime.utcnow().timestamp())}.jpg"
+
+    #         # Upload to Supabase storage bucket
+    #         self.sb.storage.from_("images").upload(filename, response.content)
+
+    #         # Get the public URL
+    #         public_url = self.sb.storage.from_("images").get_public_url(filename)
+
+    #         return public_url
+
+    #     except Exception as e:
+    #         print("❌ Error uploading image:", e)
+    #         return None
+    def upload_image(self, image_url: str) -> str:
+        """Upload image from URL to Supabase storage and return public URL"""
+        try:
+            response = requests.get(image_url)
+            if response.status_code != 200:
+                raise Exception("Failed to download image")
+
+            filename = f"{self.current_user['id']}_{int(datetime.utcnow().timestamp())}.jpg"
+
+            self.sb.storage.from_("images").upload(
+                path=filename,
+                file=response.content,
+                file_options={"content-type": "image/jpeg"}
+            )
+
+            # ✅ Extract only the URL string
+            public_url = self.sb.storage.from_("images").get_public_url(filename)
+
+
+            return public_url
+
+        except Exception as e:
+            print("❌ Error uploading image:", e)
+            return None
+
+
     def create_post(self, content: str, image_url: str = ""):
+        """Create a new post with optional image upload"""
         if not self.current_user:
             return {"error": "User not logged in"}
 
-        result = self.sb.table("posts").insert({
-            "user_id": self.current_user["id"],
+        final_image_url = None
+        if image_url:
+            final_image_url = self.upload_image(image_url)
+
+        data = {
             "content": content,
-            "image_url": image_url
-        }).execute()
-        return result.data
+            "user_id": self.current_user["id"],
+            "image_url": final_image_url
+        }
+
+        self.sb.table("posts").insert(data).execute()
+        return {"success": True, "message": "Post created"}
 
     # def like_post(self, post_id: int):
     #     if not self.current_user:
@@ -182,7 +248,6 @@ class DatabaseManager:
     def get_post_by_id(self, post_id: int):
         result = self.sb.table("posts").select("*").eq("id", post_id).execute()
         return result.data
-s=DatabaseManager()
-print(s.login("admin","artham432779"))
-print(s.unlike_post(1))
-print(s.count_likes(1))
+# s=DatabaseManager()
+# print(s.login("admin","artham432779"))
+# print(s.create_post("image upload","ht108009A3A73D6A8E916D6E5388BE096CA8&selectedIndex=20&itb=0"))

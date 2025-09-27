@@ -53,6 +53,6 @@ class SocialMediaPlatform:
             return []
 
 #Testing
-s = SocialMediaPlatform()
-print(s.login("praneeth", "artham432779"))
-print(s.get_posts())
+# s = SocialMediaPlatform()
+# print(s.login("praneeth", "artham432779"))
+# print(s.get_posts())
